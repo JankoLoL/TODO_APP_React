@@ -8,6 +8,7 @@ export const getTasks = async (successCallback) => {
         const response = await fetch(`${API_URL}/tasks`, {
             headers: {
                 Authorization: API_KEY,
+                'Content-Type': 'application/json',
             },
         });
 
@@ -22,3 +23,30 @@ export const getTasks = async (successCallback) => {
         console.log(err);
     }
 };
+
+/**
+ * Add new task
+ * @param {object} task - Object representing task
+ * @param {function} successCallback - Function that saves incoming data
+ */
+export const addTask = async (task, successCallback) => {
+    try {
+        const response = await fetch(`${API_URL}/tasks`, {
+            method: 'POST',
+            headers: {
+                Authorization: API_KEY,
+            },
+            body: JSON.stringify(task)
+        });
+
+        const data = await response.json();
+
+        if (data.error || typeof successCallback !== "function") {
+            throw new Error("Error while adding new task");
+        }
+
+        successCallback(data.data);
+    } catch (err) {
+        console.log(err);
+    }
+}

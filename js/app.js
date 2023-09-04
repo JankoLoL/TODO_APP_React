@@ -1,38 +1,36 @@
-import React, {useState, useEffect} from "react";
-import {createRoot} from "react-dom/client";
-import {getTasks} from "./api/tasks";
-import NewTask from "./NewTask";
-import Task from "./Task";
+import React, { useState, useEffect } from "react";
+import { createRoot } from "react-dom/client";
+
+import NewTask from "./components/NewTask";
+import Task from "./components/Task";
+
+import { getTasks } from './api/tasks';
 
 function App() {
-    const [tasks, setTasks] = useState([]);
+
+    const [tasks, setTasks] = useState(null);
 
     useEffect(() => {
-        getTasks(handleTasks);
+        getTasks((data) => {
+            console.log(data);
+            setTasks(data);
+        });
     }, []);
 
-    const handleTasks = (data) => {
-        setTasks(data);
-    };
+    // () addNewTask
+    // () removeTask
 
-    const addTask = (newTask) => {
-        setTasks((prevTasks) => [...prevTasks, newTask]);
-    }
-
-    const removeTask = (taskId) => {
-        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-    }
     return (
         <>
-            <NewTask addTask={addTask}/>
-            {tasks.length > 0 && <Task task={tasks[0]} removeTask={removeTask}/>}
+            <NewTask />
+            {
+                tasks && tasks.map(task => <Task key={task.id} task={task} />)
+            }
         </>
     )
+
 }
-
-export default App;
-
 
 const container = document.getElementById("app");
 const root = createRoot(container);
-root.render(<App/>);
+root.render(<App />);
